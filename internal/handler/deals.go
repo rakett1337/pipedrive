@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"io"
@@ -7,6 +7,15 @@ import (
 )
 
 const remoteURL = "https://api.pipedrive.com/v1"
+
+func DealsHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet, http.MethodPost, http.MethodPut:
+		proxyHandler(w, r)
+	default:
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+}
 
 func proxyHandler(w http.ResponseWriter, r *http.Request) {
 	targetURL, err := url.Parse(remoteURL + r.URL.Path)
