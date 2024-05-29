@@ -10,6 +10,11 @@ import (
 var apiToken = os.Getenv("API_TOKEN")
 
 func TestDealsHandler(t *testing.T) {
+	if apiToken == "" {
+		t.Error("API_TOKEN is not set")
+		return
+	}
+
 	testCases := []struct {
 		name           string
 		authMethod     string

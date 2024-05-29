@@ -11,9 +11,10 @@ import (
 func main() {
 	log.SetFlags(log.LstdFlags)
 	mux := http.NewServeMux()
-	mux.HandleFunc("/deals", handler.DealsHandler)
-	mux.HandleFunc("/deals/{id}", handler.DealsHandler)
-	mux.HandleFunc("/metrics", handler.MetricsHandler)
+	mux.HandleFunc("GET /deals", handler.DealsHandler)
+	mux.HandleFunc("POST /deals", handler.DealsHandler)
+	mux.HandleFunc("PUT /deals/{id}", handler.DealsHandler)
+	mux.HandleFunc("GET /metrics", handler.MetricsHandler)
 
 	loggedMux := middleware.MetricsMiddleware(mux)
 
