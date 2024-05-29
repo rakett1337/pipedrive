@@ -3,7 +3,6 @@ name: Test and Lint
 
 on:
   pull_request:
-    types: [opened, edited]
 
 jobs:
   test-and-lint:
