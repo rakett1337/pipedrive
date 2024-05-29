@@ -4,6 +4,7 @@ package middleware
 import (
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/rakett1337/pipedrive/internal/metrics"
@@ -20,17 +21,16 @@ func MetricsMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(rw, r)
 		duration := time.Since(start)
 
-		if r.URL.Path == "/deals" {
+		if strings.HasPrefix(r.URL.Path, "/deals") {
 			metrics.SaveMetrics(metrics.Metrics{
 				Status:    rw.Status(),
 				Duration:  duration,
 				Method:    r.Method,
-				Path:      r.URL.Path,
+				Path:      "/deals",
 				IPAddress: httputil.GetClientIP(r),
 				UserAgent: r.UserAgent(),
 			})
 		}
 		log.Printf("%d %s %s %s %s %s", rw.Status(), r.Method, r.URL.Path, duration, r.UserAgent(), httputil.GetClientIP(r))
 	})
-
 }
