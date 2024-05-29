@@ -1,3 +1,4 @@
+// Package metrics provides functionality for capturing and retrieving metrics data.
 package metrics
 
 import (
@@ -5,13 +6,14 @@ import (
 	"time"
 )
 
+// Metrics represents the structure of the captured metrics data.
 type Metrics struct {
-	Status    int
-	Duration  time.Duration
-	Method    string
-	Path      string
-	IPAddress string
-	UserAgent string
+	Status    int           // HTTP status code
+	Duration  time.Duration // Request duration
+	Method    string        // HTTP method
+	Path      string        // Request path
+	IPAddress string        // Client IP address
+	UserAgent string        // Client User agent
 }
 
 var (
@@ -19,6 +21,7 @@ var (
 	mutex       sync.Mutex
 )
 
+// SaveMetrics saves the provided Metrics instance to the metrics data store.
 func SaveMetrics(m Metrics) {
 	mutex.Lock()
 	defer mutex.Unlock()
@@ -32,6 +35,7 @@ func SaveMetrics(m Metrics) {
 	metricsData.Store(key, metrics)
 }
 
+// GetMetrics retrieves the metrics data for the specified method and path.
 func GetMetrics(method, path string) []Metrics {
 	key := method + path
 	if v, ok := metricsData.Load(key); ok {
@@ -40,6 +44,7 @@ func GetMetrics(method, path string) []Metrics {
 	return []Metrics{}
 }
 
+// CalculateAverageDuration calculates the average duration for the specified method and path.
 func CalculateAverageDuration(method, path string) time.Duration {
 	metrics := GetMetrics(method, path)
 	totalDuration := time.Duration(0)
@@ -52,6 +57,7 @@ func CalculateAverageDuration(method, path string) time.Duration {
 	return totalDuration / time.Duration(len(metrics))
 }
 
+// GetMetricsCounts retrieves the count of metrics for each unique method and path combination.
 func GetMetricsCounts() map[string]int {
 	counts := make(map[string]int)
 	metricsData.Range(func(key, value interface{}) bool {
